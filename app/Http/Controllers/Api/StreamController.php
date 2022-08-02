@@ -7,7 +7,10 @@ use App\Http\Requests\StreamRequest;
 use App\Http\Resources\StreamResource;
 use App\Models\Stream;
 use Illuminate\Http\Request;
-
+/*use Guzzle;
+  use GuzzleHttp\Middleware;
+        use Illuminate\Support\Facades\Http;
+        use Psr\Http\Message\RequestInterface; */
 class StreamController extends Controller
 {
     /**
@@ -15,9 +18,20 @@ class StreamController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Stream $response)
     {
-        return StreamResource::collection(Stream::all());
+        $response = Stream::get('https://test.antmedia.io:5443/Sandbox/rest/v2/broadcasts/active-live-stream-count', [
+            'name' => '',
+            'description' => '',
+        ]);
+        /*$response = Http::withMiddleware(
+            Middleware::mapRequest(
+                function (RequestInterface $request) {
+                $request->withHeader('X-Example', 'Value');
+         
+                return $request;
+            })
+        ->get('https://test.antmedia.io:5443/Sandbox/rest/v2/broadcasts/active-live-stream-count'));*/
     }
 
     /**
@@ -69,5 +83,15 @@ class StreamController extends Controller
         $stream->delete();
 
         return response()->noContent();
+    }
+
+    public function test(Stream $stream) {
+ 
+$response = Http::get('https://test.antmedia.io:5443/Sandbox/rest/v2/broadcasts/active-live-stream-count', [
+    'name' => '',
+    'description' => '',
+
+]);
+
     }
 }
